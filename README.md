@@ -6,9 +6,7 @@ This Repository uses ```fabric-samples/basic-network``` All Rights Reserved for 
 ```
 git clone https://github.com/Salmandabbakuti/hlf-ecommerce.git
 
-cd e-commerce
-
-cd client
+cd hlf-ecommerce/client
 
 ./start.sh
 
