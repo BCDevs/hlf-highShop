@@ -6,6 +6,30 @@ const { Contract } = require('fabric-contract-api');
 
 class ECOM extends Contract {
 
+async Init(ctx) {
+    console.info('=========== Instantiated e-commerce chaincode ===========');
+    return shim.success();
+      }
+
+  
+  async Invoke(ctx) {
+    let ret = stub.getFunctionAndParameters();
+    console.info(ret);
+
+    let method = this[ret.fcn];
+    if (!method) {
+      console.error('no function of name:' + ret.fcn + ' found');
+      throw new Error('Received unknown function ' + ret.fcn + ' invocation');
+    }
+    try {
+      let payload = await method(stub, ret.params);
+      return shim.success(payload);
+         } catch (err) {
+      console.log(err);
+      return shim.error(err);
+         }
+     }
+
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
         const items = [
