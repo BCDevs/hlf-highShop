@@ -120,6 +120,19 @@ async Init(ctx) {
         await ctx.stub.putState('Ord'+orderId, Buffer.from(JSON.stringify(order)));
         console.info('Order Placed Succesfully. Your Order Id is..'+orderId);
     }
+  async myOrder(ctx, args) {
+    if (args.length != 1) {
+      throw new Error('Incorrect number of arguments. Expecting 1');
+    }
+    
+
+    let orderAsBytes = await ctx.stub.getState(args[0]); 
+    if (!orderAsBytes || orderAsBytes.toString().length <= 0) {
+      throw new Error( 'Order does not exist: ');
+    }
+    console.log(orderAsBytes.toString());
+    return orderAsBytes;
+  }
 
     async allOrders(ctx){
         console.log("All Orders called");
