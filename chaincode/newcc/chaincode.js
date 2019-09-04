@@ -123,8 +123,8 @@ async Init(ctx) {
 
     async allOrders(ctx){
         console.log("All Orders called");
-        const startKey = Ord0;
-        const endKey = Ord99;
+        const startKey = 'Ord0';
+        const endKey = 'Ord99';
 
         const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
