@@ -107,7 +107,9 @@ async Init(ctx) {
 
     async buyProduct(ctx,args) {
         console.info('Buying Product..');
-
+    let ret = ctx.stub.getFunctionAndParameters();
+    console.info(ret);
+    let args=ret.params;
         const order = {
             ItemId:args[0],
             docType: 'orders',
