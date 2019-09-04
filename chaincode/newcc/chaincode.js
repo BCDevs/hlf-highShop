@@ -116,9 +116,9 @@ async Init(ctx) {
             Quantity:args[2],
             Status:args[3]
         };
-      orderId= ++id;
+      let orderId= ++id;
         await ctx.stub.putState('Ord'+orderId, Buffer.from(JSON.stringify(order)));
-        console.info('Order Placed Succesfully. Your Order Id is..'+orderId);
+        console.info('Order Placed Succesfully.'+orderId);
     }
   async myOrder(ctx, args) {
     if (args.length != 1) {
@@ -180,7 +180,7 @@ async addProduct(ctx,args) {
         };
 
         await ctx.stub.putState(args[0], Buffer.from(JSON.stringify(item)));
-        console.info('=============Product Added with an Id of..'+itemId);
+        console.info('=============Product Added with an Id of '+args[0]);
     }
   
 
@@ -189,7 +189,7 @@ async addProduct(ctx,args) {
 
         const orderAsBytes = await ctx.stub.getState(args[0]); // get the car from chaincode state
         if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`order does not exist`);
+            throw new Error(`order with this Id does not exist`);
         }
         const order = JSON.parse(orderAsBytes.toString());
         order.Status= args[1];
