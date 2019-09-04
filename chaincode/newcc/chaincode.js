@@ -14,7 +14,6 @@ async Init(ctx) {
   
   async Invoke(ctx) {
     let ret = ctx.stub.getFunctionAndParameters();
-    let args= ret.params;
     console.info(ret);
 
     let method = this[ret.fcn];
@@ -23,7 +22,7 @@ async Init(ctx) {
       throw new Error('Received unknown function ' + ret.fcn + ' invocation');
     }
     try {
-      let payload = await method(ctx,args);
+      let payload = await method(ctx, ret.params);
       return shim.success(payload);
          } catch (err) {
       console.log(err);
