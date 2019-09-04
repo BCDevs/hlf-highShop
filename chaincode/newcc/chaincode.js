@@ -106,7 +106,7 @@ async Init(ctx) {
         }
     }
 
-    async buyProduct(ctx) {
+    async buyProduct(ctx,args) {
         console.info('Buying Product..');
 
         const order = {
@@ -167,7 +167,7 @@ async Init(ctx) {
         }
     }
 
-async addProduct(ctx) {
+async addProduct(ctx,args) {
         console.info('============= Adding Product.. ===========');
 
         const item = {
@@ -184,7 +184,7 @@ async addProduct(ctx) {
     }
   
 
-    async changeOrderStatus(ctx) {
+    async changeOrderStatus(ctx, args) {
         console.info('===Changing Order Status===');
 
         const orderAsBytes = await ctx.stub.getState(args[0]); // get the car from chaincode state
