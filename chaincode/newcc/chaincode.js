@@ -11,26 +11,6 @@ async Init(ctx) {
     return shim.success();
       }
 
-  
-  async Invoke(ctx) {
-    let ret = ctx.stub.getFunctionAndParameters();
-    let args= ret.params;
-    console.info(ret);
-
-    let method = this[ret.fcn];
-    if (!method) {
-      console.error('no function of name:' + ret.fcn + ' found');
-      throw new Error('Received unknown function ' + ret.fcn + ' invocation');
-    }
-    try {
-      let payload = await method(ctx,args);
-      return shim.success(payload);
-         } catch (err) {
-      console.log(err);
-      return shim.error(err);
-         }
-     }
-
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
         const items = [
@@ -108,7 +88,9 @@ async Init(ctx) {
 
     async buyProduct(ctx,args) {
         console.info('Buying Product..');
-        const order = {
+       let ret = ctx.stub.getFunctionAndParameters();
+       let args= ret.params; 
+const order = {
             ItemId:args[0],
             docType: 'orders',
             Customer:args[1],
