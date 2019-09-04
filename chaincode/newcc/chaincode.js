@@ -106,7 +106,7 @@ const order = {
     if (!orderAsBytes || orderAsBytes.toString().length <= 0) {
       throw new Error( 'Order does not exist: ');
     }
-    console.log(orderAsBytes.toString());
+    console.info(orderAsBytes.toString());
     return orderAsBytes;
   }
 
