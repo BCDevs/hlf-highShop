@@ -115,7 +115,7 @@ async Init(ctx) {
             Quantity:args[2],
             Status:args[3]
         };
-  orderId= ++ id;
+      orderId= ++id;
         await ctx.stub.putState('Ord'+orderId, Buffer.from(JSON.stringify(order)));
         console.info('Order Placed Succesfully. Your Order Id is..'+orderId);
     }
