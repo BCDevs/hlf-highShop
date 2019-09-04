@@ -105,25 +105,25 @@ async Init(ctx) {
         }
     }
 
-    async buyProduct(ctx, itemId, customerName, quantity, status) {
+    async buyProduct(ctx) {
         console.info('Buying Product..');
 
         const order = {
-            ItemId:itemId,
+            ItemId:args[0],
             docType: 'orders',
-            Customer:customerName,
-            Quantity:quantity,
-            Status:status
+            Customer:args[1],
+            Quantity:args[2],
+            Status:args[3]
         };
   orderId= ++ id;
-        await ctx.stub.putState(orderId, Buffer.from(JSON.stringify(order)));
+        await ctx.stub.putState('Ord'+orderId, Buffer.from(JSON.stringify(order)));
         console.info('Order Placed Succesfully. Your Order Id is..'+orderId);
     }
 
     async allOrders(ctx){
         console.log("All Orders called");
-        const startKey = 0;
-        const endKey = 100;
+        const startKey = Ord0;
+        const endKey = Ord99;
 
         const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
@@ -153,34 +153,34 @@ async Init(ctx) {
         }
     }
 
-async addProduct(ctx, itemId, Type, Model, Name, Price, Sku_id) {
+async addProduct(ctx) {
         console.info('============= Adding Product.. ===========');
 
         const item = {
-            type:Type,
-            model:Model,
-            name:Name,
-            price:Price,
+            type:args[1],
+            model:args[2],
+            name:args[3],
+            price:args[4],
             docType:'products',
-            sku_id: Sku_id
+            sku_id: args[5]
         };
 
-        await ctx.stub.putState(itemId, Buffer.from(JSON.stringify(item)));
+        await ctx.stub.putState(args[0], Buffer.from(JSON.stringify(item)));
         console.info('=============Product Added with an Id of..'+itemId);
     }
   
 
-    async changeOrderStatus(ctx, orderId, orderStatus) {
+    async changeOrderStatus(ctx) {
         console.info('===Changing Order Status===');
 
-        const orderAsBytes = await ctx.stub.getState(orderId); // get the car from chaincode state
+        const orderAsBytes = await ctx.stub.getState(args[0]); // get the car from chaincode state
         if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`${orderId} does not exist`);
+            throw new Error(`order does not exist`);
         }
         const order = JSON.parse(orderAsBytes.toString());
-        order.Status= orderStatus;
+        order.Status= args[1];
 
-        await ctx.stub.putState(orderId, Buffer.from(JSON.stringify(order)));
+        await ctx.stub.putState(args[0], Buffer.from(JSON.stringify(order)));
         console.info('============= END : changed order Status ===========');
     }
     
