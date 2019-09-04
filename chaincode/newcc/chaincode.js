@@ -17,13 +17,12 @@ async Init(ctx) {
     console.info(ret);
 
     let method = this[ret.fcn];
-    let args = ret.params;
     if (!method) {
       console.error('no function of name:' + ret.fcn + ' found');
       throw new Error('Received unknown function ' + ret.fcn + ' invocation');
     }
     try {
-      let payload = await method(ctx,args);
+      let payload = await method(ctx, ret.params);
       return shim.success(payload);
          } catch (err) {
       console.log(err);
