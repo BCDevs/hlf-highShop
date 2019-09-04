@@ -14,6 +14,7 @@ async Init(ctx) {
   
   async Invoke(ctx) {
     let ret = ctx.stub.getFunctionAndParameters();
+    let args= ret.params;
     console.info(ret);
 
     let method = this[ret.fcn];
@@ -107,9 +108,6 @@ async Init(ctx) {
 
     async buyProduct(ctx,args) {
         console.info('Buying Product..');
-    let ret = ctx.stub.getFunctionAndParameters();
-    console.info(ret);
-    let args=ret.params;
         const order = {
             ItemId:args[0],
             docType: 'orders',
