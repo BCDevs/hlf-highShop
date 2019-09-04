@@ -101,12 +101,8 @@ const order = {
         console.info('Order Placed Succesfully.'+orderId);
     }
   async myOrder(ctx, orderId) {
-    if (args.length != 1) {
-      throw new Error('Incorrect number of arguments. Expecting 1');
-    }
-    
-
-    let orderAsBytes = await ctx.stub.getState(orderId); 
+ 
+   let orderAsBytes = await ctx.stub.getState(orderId); 
     if (!orderAsBytes || orderAsBytes.toString().length <= 0) {
       throw new Error( 'Order does not exist: ');
     }
