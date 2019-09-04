@@ -86,28 +86,27 @@ async Init(ctx) {
         }
     }
 
-    async buyProduct(ctx,args) {
+    async buyProduct(ctx,itemId,customer,quantity) {
         console.info('Buying Product..');
-       let ret = ctx.stub.getFunctionAndParameters();
-       let args= ret.params; 
+       
 const order = {
-            ItemId:args[0],
+            ItemId:itemId,
             docType: 'orders',
-            Customer:args[1],
-            Quantity:args[2],
-            Status:args[3]
+            Customer:customer,
+            Quantity: quantity,
+            Status:'Placed'
         };
       let orderId= ++id;
         await ctx.stub.putState('Ord'+orderId, Buffer.from(JSON.stringify(order)));
         console.info('Order Placed Succesfully.'+orderId);
     }
-  async myOrder(ctx, args) {
+  async myOrder(ctx, orderId) {
     if (args.length != 1) {
       throw new Error('Incorrect number of arguments. Expecting 1');
     }
     
 
-    let orderAsBytes = await ctx.stub.getState(args[0]); 
+    let orderAsBytes = await ctx.stub.getState(orderId); 
     if (!orderAsBytes || orderAsBytes.toString().length <= 0) {
       throw new Error( 'Order does not exist: ');
     }
