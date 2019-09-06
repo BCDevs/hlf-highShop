@@ -13,7 +13,7 @@ async Init(ctx) {
 
   
   async Invoke(ctx) {
-    let ret = ctx.stub.getFunctionAndParameters();
+    let ret = stub.getFunctionAndParameters();
     console.info(ret);
 
     let method = this[ret.fcn];
