@@ -13,9 +13,9 @@ async Init(ctx) {
 
   
   async Invoke(ctx) {
-    let ret = stub.getFunctionAndParameters();
+    let ret = ctx.stub.getFunctionAndParameters();
     console.log(ret);
-    let args=ret.params;
+    let args=ret.getArgs();
      console.log(args);
 
     let method = this[ret.fcn];
