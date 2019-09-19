@@ -210,7 +210,7 @@ async rejectPatent(ctx,auditorId,key,patentId) {
     throw new Error('Patent With This Id Doesnt Exist..!');
      }
   let patent = JSON.parse(patentAsBytes);
-  if (patent.status="Passed Verification Phase"){
+  if (patent.status=="Passed Verification Phase"){
       
    patent.status="Rejected";
    await ctx.stub.putState(patentId, Buffer.from(JSON.stringify(patent)));
