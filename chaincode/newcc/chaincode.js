@@ -11,7 +11,7 @@ class Patents extends Contract {
             id: ownerId,
             name: ownerName,
             type: 'owner',
-            OwnedPatents: [],
+            ownedPatents: [],
             proposedPatents: [],
             accessKey:key
              };
