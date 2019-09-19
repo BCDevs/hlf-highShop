@@ -77,7 +77,7 @@ class Patents extends Contract {
             accessKey:key
         };
 
-      let auditorAsBytes = await ctx.stub.getState(args[0]); 
+      let auditorAsBytes = await ctx.stub.getState(auditorId); 
        if (!auditorAsBytes || auditorAsBytes.toString().length <= 0) {
  
         await ctx.stub.putState(auditorId, Buffer.from(JSON.stringify(auditorData)));
@@ -115,7 +115,7 @@ let credentialsAsBytes = await ctx.stub.getState(ownerId);
           
             //store patent identified by patentID
     //Adding patent to Proposed patent list..
-    credentials.proposedPatents.push(patentId);
+    credentials.proposedPatents.push('Pat'+refId);
     await ctx.stub.putState(ownerId, Buffer.from(JSON.stringify(credentials)));
     await ctx.stub.putState('Pat'+refId, Buffer.from(JSON.stringify(patentData)));
     
