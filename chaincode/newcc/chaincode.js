@@ -261,12 +261,22 @@ throw new Error("Patent is Not Yet Verified or Already Rejected..!")
      
 }   
     // get the state from key
-    async GetState(ctx, key) {
-        let data = await ctx.stub.getState(key);
-        let jsonData = JSON.parse(data.toString());
-        return JSON.stringify(jsonData);
-    }
-        
+ async query(ctx,userId,accessKey, key) {
+    let credentialsAsBytes = await ctx.stub.getState(userId); 
+    
+     if (!credentialsAsBytes || credentialsAsBytes.toString().length <= 0) {
+       throw new Error('Incorrect UserId or Not Authorized..!');
+         }
+     else{
+      let credentials= JSON.parse(credentialsAsBytes);
+      if (accesskey!=credentials.accessKey) {
+      throw new Error('Incorrect Access key..!');
+           }    
+      let data = await ctx.stub.getState(key);
+      let jsonData = JSON.parse(data.toString());
+      return JSON.stringify(jsonData);
+        }
+   }     
 }
 
 module.exports = Patents;
