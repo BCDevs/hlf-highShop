@@ -1,6 +1,6 @@
 
 'use strict';
 
-const ECOM = require('./chaincode');
+const Patents = require('./chaincode');
 
-module.exports.contracts = [ ECOM ];
+module.exports.contracts = [ Patents ];
