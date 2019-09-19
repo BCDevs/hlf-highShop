@@ -1,181 +1,272 @@
-'use strict'
-
+'use strict';
+//for patent listings
 let id=0;
-
 const { Contract } = require('fabric-contract-api');
+class Patents extends Contract {
 
-class ECOM extends Contract {
+    
+ async registerOwner(ctx, ownerId,key,ownerName) {
 
-async Init(ctx) {
-    console.info('=========== Instantiated e-commerce chaincode ===========');
-    return shim.success();
-      }
-
-    async initLedger(ctx) {
-        console.info('============= START : Initialize Ledger ===========');
-        const items = [
-            {
-                type:'gadgets',
-                model:'G1',
-                name:'Smartphone',
-                price:'1000',
-                sku_id:1
-            },
-            {
-              type:'electronics',
-              model:'E1',
-              name:'AirCondition',
-              price:'2000',
-              sku_id:2
+        let ownerData = {
+            id: ownerId,
+            name: ownerName,
+            type: 'owner',
+            OwnedPatents: [],
+            proposedPatents: [],
+            accessKey:key
+             };
+   let ownerAsBytes = await ctx.stub.getState(ownerId); 
+   if (!ownerAsBytes || ownerAsBytes.toString().length <= 0) {
  
-            },
-            {
-                type:'garments',
-                model:'ga1',
-                name:'T-shirt',
-                price:'200',
-                sku_id:3
-            },
-            {
-                type:'gadgets',
-                model:'G2',
-                name:'Laptop',
-                price:'5000',
-                sku_id:4
-            }
-        ];
+     await ctx.stub.putState(ownerId, Buffer.from(JSON.stringify(ownerData)));
 
-        for (let i = 0; i < items.length; i++) {
-            
-            items[i].docType = "products";
-            await ctx.stub.putState('Item' + i, Buffer.from(JSON.stringify(items[i])));
-        
-        }
-        console.log("Ledger init success!");
-    }
+             }
+    else {
+      throw new Error('Username is already taken.!');
+         }
+  }
+  async registerPublisher(ctx, publisherId,key, publisherName) {
 
-    async queryAllProducts(ctx) {
-        const startKey = 'Item0';
-        const endKey = 'Item99';
-
-        const iterator = await ctx.stub.getStateByRange(startKey, endKey);
-
-        const allResults = [];
-        while (true) {
-            const res = await iterator.next();
-
-            if (res.value && res.value.value.toString()) {
-                console.log(res.value.value.toString('utf8'));
-
-                const Key = res.value.key;
-                let Record;
-                try {
-                    Record = JSON.parse(res.value.value.toString('utf8'));
-                } catch (err) {
-                    console.log(err);
-                    Record = res.value.value.toString('utf8');
-                }
-                allResults.push({ Key, Record });
-            }
-            if (res.done) {
-                console.log('end of data');
-                await iterator.close();
-                console.info(allResults);
-                return JSON.stringify(allResults);
-            }
-        }
-    }
-
-    async buyProduct(ctx,itemId,customer,quantity) {
-        console.info('Buying Product..');
-       
-const order = {
-            ItemId:itemId,
-            docType: 'orders',
-            Customer:customer,
-            Quantity: quantity,
-            Status:'Placed'
+        let publisherData = {
+            id: publisherId,
+            name: publisherName,
+            type: 'publisher',
+            publishedPatents: [],
+            accessKey:key
         };
-      let orderId= ++id;
-        await ctx.stub.putState('Ord'+orderId, Buffer.from(JSON.stringify(order)));
-        console.info('Order Placed Succesfully.'+orderId);
-    }
-  async myOrder(ctx, orderId) {
+        let publisherAsBytes = await ctx.stub.getState(publisherId); 
+       if (!publisherAsBytes || publisherAsBytes.toString().length <= 0) {
  
-   let orderAsBytes = await ctx.stub.getState(orderId); 
-    if (!orderAsBytes || orderAsBytes.toString().length <= 0) {
-      throw new Error( 'Order does not exist: ');
-    }
-    console.info(orderAsBytes.toString());
-    return orderAsBytes;
+          await ctx.stub.putState(publisherId, Buffer.from(JSON.stringify(publisherData)));
+
+             }
+
+       else {
+          throw new Error('Username is already taken.!');
+         }
+  }
+ async registerVerifier(ctx, verifierId, key,verifierName) {
+
+        let verifierData = {
+            id: verifierId,
+            name: verifierName,
+            type: 'verifier',
+            verifiedPatents: [],
+            accessKey:key
+        };
+      let verifyerAsBytes = await ctx.stub.getState(verifierId); 
+       if (!verifyerAsBytes || verifyerAsBytes.toString().length <= 0) {
+ 
+  
+      await ctx.stub.putState(verifierId, Buffer.from(JSON.stringify(verifierData)));
+
+         }
+
+        else {
+          throw new Error('Username is already taken.!');
+          }
   }
 
-    async allOrders(ctx){
-        console.log("All Orders called");
-        const startKey = 'Ord0';
-        const endKey = 'Ord99';
+ async registerAuditor(ctx, auditorId,key, auditorName) { 
 
-        const iterator = await ctx.stub.getStateByRange(startKey, endKey);
-
-        const allResults = [];
-        while (true) {
-            const res = await iterator.next();
-
-            if (res.value && res.value.value.toString()) {
-                console.log(res.value.value.toString('utf8'));
-
-                const Key = res.value.key;
-                let Record;
-                try {
-                    Record = JSON.parse(res.value.value.toString('utf8'));
-                } catch (err) {
-                    console.log(err);
-                    Record = res.value.value.toString('utf8');
-                }
-                allResults.push({ Key, Record });
-            }
-            if (res.done) {
-                console.log('end of data');
-                await iterator.close();
-                console.info(allResults);
-                return JSON.stringify(allResults);
-            }
-        }
-    }
-
-async addProduct(ctx,ItemId,Type,Model,Name,Price,Sku_Id) {
-        console.info('============= Adding Product.. ===========');
-
-        const item = {
-            type:Type,
-            model:Model,
-            name:Name,
-            price:Price,
-            docType:'products',
-            sku_id:Sku_Id
+        let auditorData = {
+            id: auditorId,
+            name: auditorName,
+            type: 'auditor',
+            auditedPatents: [],
+            accessKey:key
         };
 
-        await ctx.stub.putState(ItemId, Buffer.from(JSON.stringify(item)));
-        console.info('=============Product Added with an Id of '+ItemId);
-    }
-  
+      let auditorAsBytes = await ctx.stub.getState(args[0]); 
+       if (!auditorAsBytes || auditorAsBytes.toString().length <= 0) {
+ 
+        await ctx.stub.putState(auditorId, Buffer.from(JSON.stringify(auditorData)));
 
-    async changeOrderStatus(ctx, orderId,orderStatus) {
-        console.info('===Changing Order Status===');
-
-        const orderAsBytes = await ctx.stub.getState(orderId); // get the car from chaincode state
-        if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`order with this Id does not exist`);
+          } else {
+            throw new Error('Username is already taken.!');
         }
-        const order = JSON.parse(orderAsBytes.toString());
-        order.Status= orderStatus;
-
-        await ctx.stub.putState(orderId, Buffer.from(JSON.stringify(order)));
-        console.info('============= END : changed order Status ===========');
-    }
+}
+async registerPatent(ctx,ownerId,key,patentName,industry){
+         
+let credentialsAsBytes = await ctx.stub.getState(ownerId); 
     
-
+  if (!credentialsAsBytes || credentialsAsBytes.toString().length <= 0) {
+    throw new Error('Incorrect OwnerId..!');
+         }
+  else{
+  let credentials= JSON.parse(credentialsAsBytes);
+  if (key!=credentials.accessKey) {
+  throw new Error('Incorrect Access key..!');
+        }
+   let refId=++id;
+   let patentData = {
+                "type":"patent",
+                "name":patentName,
+                "id":'Pat'+refId,
+                "ownerId":ownerId,
+                "verifierId":"Not Yet Verified",
+                 "publisherId":"Not Yet Published",
+                  "auditorId":"Not Yet Audited",
+                "status":"Proposed",
+                 "validity":"None",
+                "industry":industry,
+                "details":"To be Finalized"
+                  };
+          
+            //store patent identified by patentID
+    //Adding patent to Proposed patent list..
+    credentials.proposedPatents.push(patentId);
+    await ctx.stub.putState(ownerId, Buffer.from(JSON.stringify(credentials)));
+    await ctx.stub.putState('Pat'+refId, Buffer.from(JSON.stringify(patentData)));
+    
+            console.log('Patent Successfully Proposed With an Id of Pat'+ref);
+        }
 }
 
+async verifyPatent(ctx,verifierId,key, patentId) {
 
-module.exports = ECOM;
+   let credentialsAsBytes = await ctx.stub.getState(verifierId); 
+    
+  if (!credentialsAsBytes || credentialsAsBytes.toString().length <= 0) {
+    throw new Error('Incorrect verifierId..!');
+         }
+  else{
+  let credentials= JSON.parse(credentialsAsBytes);
+  if (key!=credentials.accessKey) {
+  throw new Error('Incorrect Access key..!');
+        }    
+
+ let patentAsBytes = await ctx.stub.getState(patentId);
+ if (!patentAsBytes || patentAsBytes.toString().length <= 0) {
+    throw new Error('Patent With This Id Doesnt Exist..!');
+         }
+  let patent = JSON.parse(patentAsBytes);
+  patent.verifierId = verifierId;
+  patent.status = "Passed Verification Phase";
+  patent.auditorId = "To be Audited";
+     
+   //Adding Verified Patents to Verifier Profile
+   credentials.verifiedPatents.push(patentId);
+   await ctx.stub.putState(verifierId, Buffer.from(JSON.stringify(credentials)));
+         
+
+   await ctx.stub.putState(patentId, Buffer.from(JSON.stringify(patent)));
+   console.log("Patent Details Verified and Submitted to Auditor Successfully..")
+
+    }
+ }
+
+ async approvePatent(ctx, auditorId, key, patentId, validity) {
+
+   let credentialsAsBytes = await ctx.stub.getState(auditorId); 
+    
+  if (!credentialsAsBytes || credentialsAsBytes.toString().length <= 0) {
+    throw new Error('Incorrect auditorId..!');
+         }
+  else{
+  let credentials= JSON.parse(credentialsAsBytes);
+  if (key!=credentials.accessKey) {
+  throw new Error('Incorrect Access key..!');
+        }    
+
+ let patentAsBytes = await ctx.stub.getState(patentId);
+ if (!patentAsBytes || patentAsBytes.toString().length <= 0) {
+    throw new Error('Patent With This Id Doesnt Exist..!');
+         }
+  let patent = JSON.parse(patentAsBytes);
+  if (patent.status!= "Passed Verification Phase"){
+     throw new Error("Patent is not Verified yet or Rejected");
+      }
+ 
+
+   patent.status="Approved and Ready To be Published"
+   patent.auditorId=auditorId;
+   patent.validty=validity;
+   await ctx.stub.putState(patentId, Buffer.from(JSON.stringify(patent)));
+  
+   //Adding Patents to Auditor Profile
+   credentials.auditedPatents.push(patentId);
+   await ctx.stub.putState(auditorId, Buffer.from(JSON.stringify(credentials)));
+   console.log("Patent is Approved and Ready To Publish..")
+   
+   }
+    
+}
+async rejectPatent(ctx,auditorId,key,patentId) {
+
+  let credentialsAsBytes = await ctx.stub.getState(auditorId); 
+    
+  if (!credentialsAsBytes || credentialsAsBytes.toString().length <= 0) {
+    throw new Error('Incorrect auditorId..!');
+         }
+  else{
+  let credentials= JSON.parse(credentialsAsBytes);
+  if (key!=credentials.accessKey) {
+  throw new Error('Incorrect Access key..!');
+        }    
+
+ let patentAsBytes = await ctx.stub.getState(patentId);
+ if (!patentAsBytes || patentAsBytes.toString().length <= 0) {
+    throw new Error('Patent With This Id Doesnt Exist..!');
+     }
+  let patent = JSON.parse(patentAsBytes);
+  if (patent.status="Passed Verification Phase"){
+      
+   patent.status="Rejected";
+   await ctx.stub.putState(patentId, Buffer.from(JSON.stringify(patent)));
+   console.log("Patent Rejected..")
+         }        
+throw new Error("Patent is Not Yet Verified or Already Rejected..!")
+   }
+}
+ async publishPatent(ctx,publisherId,key, patentId,details) {
+
+       let credentialsAsBytes = await ctx.stub.getState(publisherId); 
+    
+  if (!credentialsAsBytes || credentialsAsBytes.toString().length <= 0) {
+    throw new Error('Incorrect publisherId..!');
+         }
+  else{
+  let credentials= JSON.parse(credentialsAsBytes);
+  if (key!=credentials.accessKey) {
+  throw new Error('Incorrect Access key..!');
+        }    
+
+ let patentAsBytes = await ctx.stub.getState(patentId);
+ if (!patentAsBytes || patentAsBytes.toString().length <= 0) {
+    throw new Error('Patent With This Id Doesnt Exist..!');
+         }
+  let patent = JSON.parse(patentAsBytes);
+  if (patent.status!="Approved and Ready To be Published"){
+     throw new Error("Patent is not Approved yet or Rejected");
+      } 
+
+   patent.status="Approved And Published"
+   patent.details=details; 
+   await ctx.stub.putState(patentId, Buffer.from(JSON.stringify(patent)));
+  // Adding Patent Details to Publisher Profile..
+  credentials.publishedPatents.push(patentId);
+  await ctx.stub.putState(publisherId, Buffer.from(JSON.stringify(credentials)));
+  // Linking Patent With Owner
+ let owner= patent.ownerId;
+ let ownerAsBytes=await ctx.stub.getState(owner);
+ let ownerData=JSON.parse(ownerAsBytes)
+ ownerData.ownedPatents.push(patentId);
+ 
+ await ctx.stub.putState(owner, Buffer.from(JSON.stringify(ownerData)));
+  
+  console.log("Patent is Aproved and Published..")
+   
+  }
+     
+}   
+    // get the state from key
+    async GetState(ctx, key) {
+        let data = await ctx.stub.getState(key);
+        let jsonData = JSON.parse(data.toString());
+        return JSON.stringify(jsonData);
+    }
+        
+}
+
+module.exports = Patents;
