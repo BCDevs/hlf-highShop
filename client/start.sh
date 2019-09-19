@@ -4,7 +4,7 @@ rm -rf ./hfc-key-store
 
 # Remove chaincode docker image
 docker rmi -f dev-peer0.org1.example.com-mycc-1.0-384f11f484b9302df90b453200cfb25174305fce8f53f4e94d45ee3b6cab0ce9
-
+sleep 2
 
 cd ../basic-network
 ./start.sh
