@@ -119,7 +119,7 @@ let credentialsAsBytes = await ctx.stub.getState(ownerId);
     await ctx.stub.putState(ownerId, Buffer.from(JSON.stringify(credentials)));
     await ctx.stub.putState('Pat'+refId, Buffer.from(JSON.stringify(patentData)));
     
-            console.log('Patent Successfully Proposed With an Id of Pat'+ref);
+            console.log('Patent Successfully Proposed With an Id of Pat'+refId);
         }
 }
 
