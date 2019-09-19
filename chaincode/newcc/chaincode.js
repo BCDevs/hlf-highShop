@@ -274,6 +274,7 @@ async rejectPatent(ctx,auditorId,key,patentId) {
 
    patent.status="Approved And Published"
    patent.details=details; 
+   patent.publisherId=publisherId;
    await ctx.stub.putState(patentId, Buffer.from(JSON.stringify(patent)));
   // Adding Patent Details to Publisher Profile..
   credentials.publishedPatents.push(patentId);
