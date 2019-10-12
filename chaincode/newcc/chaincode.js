@@ -11,7 +11,7 @@ async Init(ctx,s1,s2) {
        S1:s1,
        S2:s2
       }
-     await stub.putState('a',Buffer.from(JSON.stringify(marks)));
+     await ctx.stub.putState('a',Buffer.from(JSON.stringify(marks)));
     console.info('=========== Instantiated test chaincode ===========');
     return shim.success();
       }
