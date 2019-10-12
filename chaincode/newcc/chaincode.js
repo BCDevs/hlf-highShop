@@ -13,7 +13,7 @@ async Init(ctx,s1,s2) {
       }
      await ctx.stub.putState('a',Buffer.from(JSON.stringify(marks)));
     console.info('=========== Instantiated test chaincode ===========');
-    return shim.success();
+   
       }
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
