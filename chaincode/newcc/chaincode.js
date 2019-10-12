@@ -6,11 +6,15 @@ const { Contract } = require('fabric-contract-api');
 
 class ECOM extends Contract {
 
-async Init(ctx) {
-    console.info('=========== Instantiated e-commerce chaincode ===========');
+async Init(ctx,s1,s2) {
+     let marks={
+       S1:s1,
+       S2:s2
+      }
+     await stub.putState('a',Buffer.from(JSON.stringify(marks)));
+    console.info('=========== Instantiated test chaincode ===========');
     return shim.success();
       }
-
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
         const items = [
