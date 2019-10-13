@@ -8,8 +8,8 @@ class ECOM extends Contract {
 
 async Init(ctx,s1,s2) {
      let marks={
-       S1:s1,
-       S2:s2
+       Subj1:s1,
+       Subj2:s2
       }
      await ctx.stub.putState('a',Buffer.from(JSON.stringify(marks)));
     console.info('=========== Instantiated test chaincode ===========');
