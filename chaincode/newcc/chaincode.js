@@ -6,7 +6,7 @@ const { Contract } = require('fabric-contract-api');
 
 class ECOM extends Contract {
 
-async Init(ctx,s1,s2) {
+async instantiate(ctx,s1,s2) {
      let marks={
        Subj1:s1,
        Subj2:s2
